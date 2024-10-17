@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generate</title>
+    <script>
+        function showImage() {
+            const form = document.getElementById('textForm');
+            const formData = new FormData(form);
+
+            fetch('/generate_image', {
+                method: 'POST',
+                body: formData,
+            })
+            .then(response => response.blob())
+            .then(imageBlob => {
+                const imgElement = document.getElementById('generatedImage');
+                const imageObjectURL = URL.createObjectURL(imageBlob);
+                imgElement.src = imageObjectURL;
+                imgElement.style.display = 'block'; 
+            })
+            .catch(error => {
+                console.error('Error generating image:', error);
+            });
+
+            return false; 
+        }
+    </script>
+</head>
+<body>
+    <h1>Generate Image</h1>
+    <form id="textForm" onsubmit="return showImage();">
+        <label for="text">Type a prompt and press enter to generate an image:</label>
+        <input type="text" id="text" name="text" required>
+        <button type="submit">Generate</button>
+    </form>
+
+    <img id="generatedImage" src="" alt="generate_image" style="display:none; margin-top: 20px;">
+</body>
+</html>
